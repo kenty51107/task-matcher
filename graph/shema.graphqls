@@ -1,0 +1,34 @@
+scalar Time
+
+type Task {
+  id: ID!
+  title: String!
+  content: String!
+  schedule: Time!
+  done: Boolean!
+  created_at: Time!
+  updated_at: Time!
+}
+
+input CreateTaskInput {
+  title: String!
+  content: String!
+  schedule: Time!
+  done: Boolean!
+}
+
+input UpdateTaskInput {
+  title: String
+  content: String
+  schedule: Time
+  done: Boolean
+}
+
+type Query {
+  getTask(id: ID!): Task!
+}
+
+type Mutation {
+  createTask(input: CreateTaskInput!): Task!
+  updateTask(id: ID!, input: UpdateTaskInput!): Task!
+}

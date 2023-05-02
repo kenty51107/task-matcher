@@ -18,7 +18,7 @@ func (r *mutationResolver) CreateTask(ctx context.Context, input model.CreateTas
 }
 
 // UpdateTask is the resolver for the updateTask field.
-func (r *mutationResolver) UpdateTask(ctx context.Context, id string, input model.UpdateTaskInput) (*model.Task, error) {
+func (r *mutationResolver) UpdateTask(ctx context.Context, input model.UpdateTaskInput) (*model.Task, error) {
 	panic(fmt.Errorf("not implemented: UpdateTask - updateTask"))
 }
 

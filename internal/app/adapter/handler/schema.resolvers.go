@@ -6,7 +6,7 @@ package handler
 
 import (
 	"context"
-	"fmt"
+	"strconv"
 
 	"github.com/kenty51107/task-matcher/graph/generated"
 	"github.com/kenty51107/task-matcher/internal/app/domain/model"
@@ -14,17 +14,49 @@ import (
 
 // CreateTask is the resolver for the createTask field.
 func (r *mutationResolver) CreateTask(ctx context.Context, input model.CreateTaskInput) (*model.Task, error) {
-	panic(fmt.Errorf("not implemented: CreateTask - createTask"))
+	row, err := r.TP.CreateTask(&input)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
 }
 
 // UpdateTask is the resolver for the updateTask field.
 func (r *mutationResolver) UpdateTask(ctx context.Context, input model.UpdateTaskInput) (*model.Task, error) {
-	panic(fmt.Errorf("not implemented: UpdateTask - updateTask"))
+	row, err := r.TP.UpdateTask(&input)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
+}
+
+// DeleteTask is the resolver for the deleteTask field.
+func (r *mutationResolver) DeleteTask(ctx context.Context, input model.DeleteTaskInput) (*model.Task, error) {
+	row, err := r.TP.DeleteTask(&input)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
 }
 
 // GetTask is the resolver for the getTask field.
 func (r *queryResolver) GetTask(ctx context.Context, id string) (*model.Task, error) {
-	panic(fmt.Errorf("not implemented: GetTask - getTask"))
+	id_i, _ := strconv.Atoi(id)
+	row, err := r.TP.FindTaskByID(id_i)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
+}
+
+// GetTasks is the resolver for the getTasks field.
+func (r *queryResolver) GetTasks(ctx context.Context) ([]*model.Task, error) {
+	rows, err := r.TP.FindTasks()
+	if err != nil {
+		return nil, err
+	}
+	return rows, nil
+
 }
 
 // Mutation returns generated.MutationResolver implementation.

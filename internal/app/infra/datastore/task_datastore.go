@@ -42,6 +42,9 @@ func (td *taskDatastore) CreateTask(input *model.CreateTaskInput) (*model.Task, 
         CreatedAt: time.Now(),
         UpdatedAt: time.Now(),
     }
+    if input.Schedule.IsZero() {
+        row.Schedule = time.Now()
+    }
 
     if err := td.DB.Create(row).Error; err != nil {
         return nil, err
@@ -71,13 +74,13 @@ func (td *taskDatastore) UpdateTask(input *model.UpdateTaskInput) (*model.Task, 
     return row, nil
 }
 
-func (td *taskDatastore) DeleteTask(input *model.DeleteTaskInput) (*model.Task, error) {
+func (td *taskDatastore) DeleteTask(input *model.DeleteTaskInput) error {
     row := td.DB.Where("id = ?", input.ID).Delete(&model.Task{})
     if row.Error != nil {
-        return nil, row.Error
+        return row.Error
     }
     if row.RowsAffected < 1 {
-        return nil, fmt.Errorf("no task records found")
+        return fmt.Errorf("no task records found")
     }
-    return nil, nil
+    return nil
 }

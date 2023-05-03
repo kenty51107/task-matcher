@@ -7,5 +7,5 @@ type ITaskService interface {
     FindTasks() ([]*model.Task, error)
     CreateTask(*model.CreateTaskInput) (*model.Task, error)
     UpdateTask(*model.UpdateTaskInput) (*model.Task, error)
-    DeleteTask(*model.DeleteTaskInput) (*model.Task, error)
+    DeleteTask(*model.DeleteTaskInput) error
 }

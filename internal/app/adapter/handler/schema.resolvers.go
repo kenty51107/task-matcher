@@ -32,11 +32,11 @@ func (r *mutationResolver) UpdateTask(ctx context.Context, input model.UpdateTas
 
 // DeleteTask is the resolver for the deleteTask field.
 func (r *mutationResolver) DeleteTask(ctx context.Context, input model.DeleteTaskInput) (*model.Task, error) {
-	row, err := r.TP.DeleteTask(&input)
+	err := r.TP.DeleteTask(&input)
 	if err != nil {
 		return nil, err
 	}
-	return row, nil
+	return nil, nil
 }
 
 // GetTask is the resolver for the getTask field.
@@ -56,7 +56,6 @@ func (r *queryResolver) GetTasks(ctx context.Context) ([]*model.Task, error) {
 		return nil, err
 	}
 	return rows, nil
-
 }
 
 // Mutation returns generated.MutationResolver implementation.

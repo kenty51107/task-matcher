@@ -14,7 +14,7 @@ type ITaskPort interface {
     FindTasks() ([]*model.Task, error)
     CreateTask(*model.CreateTaskInput) (*model.Task, error)
     UpdateTask(*model.UpdateTaskInput) (*model.Task, error)
-    DeleteTask(*model.DeleteTaskInput) (*model.Task, error)
+    DeleteTask(*model.DeleteTaskInput) error
 }
 
 func NewTaskPort(ts service.ITaskService) ITaskPort {
@@ -37,6 +37,6 @@ func (tp *taskPort) UpdateTask(input *model.UpdateTaskInput) (*model.Task, error
     return tp.ts.UpdateTask(input)
 }
 
-func (tp *taskPort) DeleteTask(input *model.DeleteTaskInput) (*model.Task, error) {
+func (tp *taskPort) DeleteTask(input *model.DeleteTaskInput) error {
     return tp.ts.DeleteTask(input)
 }

@@ -46,10 +46,10 @@ func (ts *taskService) UpdateTask(input *model.UpdateTaskInput) (*model.Task, er
     return row, nil
 }
 
-func (ts *taskService) DeleteTask(input *model.DeleteTaskInput) (*model.Task, error) {
-    row, err := ts.tr.DeleteTask(input)
+func (ts *taskService) DeleteTask(input *model.DeleteTaskInput) error {
+    err := ts.tr.DeleteTask(input)
     if err != nil {
-        return nil, err
+        return err
     }
-    return row, nil
+    return nil
 }

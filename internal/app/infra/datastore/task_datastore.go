@@ -17,8 +17,8 @@ func NewTaskDatastore(DB *gorm.DB) repository.ITaskRepository {
     return &taskDatastore{DB}
 }
 
-func (td *taskDatastore) FindTaskByID(taskId int) (*model.Task, error) {
-    row := &model.Task{ID: taskId}
+func (td *taskDatastore) FindTaskByID(taskID int) (*model.Task, error) {
+    row := &model.Task{ID: taskID}
     if err := td.DB.First(row).Error; err != nil {
         return nil, err
     }
@@ -34,18 +34,15 @@ func (td *taskDatastore) FindTasks() ([]*model.Task, error) {
 }
 
 func (td *taskDatastore) CreateTask(input *model.CreateTaskInput) (*model.Task, error) {
+    timestamp := time.Now()
     row := &model.Task{
         Title: input.Title,
         Content: input.Content,
         Schedule: input.Schedule,
         Done: input.Done,
-        CreatedAt: time.Now(),
-        UpdatedAt: time.Now(),
+        CreatedAt: timestamp,
+        UpdatedAt: timestamp,
     }
-    if input.Schedule.IsZero() {
-        row.Schedule = time.Now()
-    }
-
     if err := td.DB.Create(row).Error; err != nil {
         return nil, err
     }
@@ -70,6 +67,10 @@ func (td *taskDatastore) UpdateTask(input *model.UpdateTaskInput) (*model.Task, 
         row.Done = *input.Done
     }
     row.UpdatedAt = time.Now()
+
+    if err := td.DB.Save(row).Error; err != nil {
+        return nil, err
+    }
 
     return row, nil
 }

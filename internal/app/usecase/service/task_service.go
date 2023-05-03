@@ -14,8 +14,8 @@ func NewTaskService(tr repository.ITaskRepository) service.ITaskService {
     return &taskService{tr}
 }
 
-func (ts *taskService) FindTaskByID(taskId int) (*model.Task, error) {
-    row, err := ts.tr.FindTaskByID(taskId)
+func (ts *taskService) FindTaskByID(taskID int) (*model.Task, error) {
+    row, err := ts.tr.FindTaskByID(taskID)
     if err != nil {
         return nil, err
     }

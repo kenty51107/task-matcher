@@ -30,3 +30,9 @@ type UpdateTaskInput struct {
 	Schedule *time.Time `json:"schedule,omitempty"`
 	Done     *bool      `json:"done,omitempty"`
 }
+
+type ValidateTaskInput struct {
+	Title string `json:"title"`
+	Content string `json:"content"`
+	Schedule time.Time `json:"schedule"`
+}

@@ -4,14 +4,16 @@ import (
 	"github.com/kenty51107/task-matcher/internal/app/domain/model"
 	"github.com/kenty51107/task-matcher/internal/app/domain/service"
 	"github.com/kenty51107/task-matcher/internal/app/usecase/repository"
+	"github.com/kenty51107/task-matcher/internal/app/usecase/validator"
 )
 
 type taskService struct {
     tr repository.ITaskRepository
+    tv validator.ITaskValidator
 }
 
-func NewTaskService(tr repository.ITaskRepository) service.ITaskService {
-    return &taskService{tr}
+func NewTaskService(tr repository.ITaskRepository, tv validator.ITaskValidator) service.ITaskService {
+    return &taskService{tr, tv}
 }
 
 func (ts *taskService) FindTaskByID(taskID int) (*model.Task, error) {
@@ -31,6 +33,9 @@ func (ts *taskService) FindTasks() ([]*model.Task, error) {
 }
 
 func (ts *taskService) CreateTask(input *model.CreateTaskInput) (*model.Task, error) {
+    if err := ts.tv.CreateTaskValidate(*input); err != nil {
+        return nil, err
+    }
     row, err := ts.tr.CreateTask(input)
     if err != nil {
         return nil, err
@@ -39,6 +44,9 @@ func (ts *taskService) CreateTask(input *model.CreateTaskInput) (*model.Task, er
 }
 
 func (ts *taskService) UpdateTask(input *model.UpdateTaskInput) (*model.Task, error) {
+    if err := ts.tv.UpdateTaskValidate(*input); err != nil {
+        return nil, err
+    }
     row, err := ts.tr.UpdateTask(input)
     if err != nil {
         return nil, err

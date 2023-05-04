@@ -13,6 +13,7 @@ import (
 	"github.com/kenty51107/task-matcher/graph/generated"
 	handlerlib "github.com/kenty51107/task-matcher/internal/app/adapter/handler"
 	"github.com/kenty51107/task-matcher/internal/app/infra/datastore"
+	"github.com/kenty51107/task-matcher/internal/app/infra/validator"
 	portlib "github.com/kenty51107/task-matcher/internal/app/usecase/port"
 	"github.com/kenty51107/task-matcher/internal/app/usecase/service"
 	"gorm.io/driver/mysql"
@@ -22,9 +23,7 @@ import (
 const defaultPort = "8080"
 
 func RegisterServer(tp portlib.ITaskPort) *handler.Server {
-    config := generated.Config{Resolvers: &handlerlib.Resolver{
-        TP: tp,
-    }}
+    config := generated.Config{Resolvers: &handlerlib.Resolver{TP: tp}}
     server := handler.NewDefaultServer(generated.NewExecutableSchema(config))
 
     return server
@@ -71,8 +70,9 @@ func main() {
         port = defaultPort
     }
 
+    taskValidator := validator.NewTaskValidator()
     taskDatastore := datastore.NewTaskDatastore(db)
-    taskService := service.NewTaskService(taskDatastore)
+    taskService := service.NewTaskService(taskDatastore, taskValidator)
     taskPort := portlib.NewTaskPort(taskService)
     graphqlHandler := RegisterServer(taskPort)
     // srv := handlerlib.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &handler.Resolver{}}))

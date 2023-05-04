@@ -1,23 +1,23 @@
 scalar Time
 
 type Task {
-  id: ID!
-  title: String!
-  content: String!
-  schedule: Time!
-  done: Boolean!
-  created_at: Time!
-  updated_at: Time!
+  id: ID
+  title: String
+  content: String
+  schedule: Time
+  done: Boolean
+  created_at: Time
+  updated_at: Time
 }
 
 input CreateTaskInput {
-  title: String!
-  content: String!
-  schedule: Time!
+  title: String
+  content: String
+  schedule: Time
 }
 
 input UpdateTaskInput {
-  id: ID!
+  id: ID
   title: String
   content: String
   schedule: Time
@@ -25,11 +25,11 @@ input UpdateTaskInput {
 }
 
 input DeleteTaskInput {
-  id: ID!
+  id: ID
 }
 
 type Query {
-  getTask(id: ID!): Task!
+  getTask(id: ID): Task!
   getTasks: [Task!]!
 }
 

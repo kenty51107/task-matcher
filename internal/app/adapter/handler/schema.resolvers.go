@@ -47,6 +47,7 @@ func (r *queryResolver) GetTask(ctx context.Context, id string) (*model.Task, er
 		return nil, err
 	}
 	return row, nil
+
 }
 
 // GetTasks is the resolver for the getTasks field.

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"log"
+
 	"github.com/kenty51107/task-matcher/internal/app/domain/model"
 	"github.com/kenty51107/task-matcher/internal/app/domain/service"
 	"github.com/kenty51107/task-matcher/internal/app/usecase/repository"
@@ -31,6 +33,10 @@ func (ts *taskService) FindTasks() ([]*model.Task, error) {
 }
 
 func (ts *taskService) CreateTask(input *model.CreateTaskInput) (*model.Task, error) {
+    // if err := input.CreateValidator(); err != nil {
+    //     return nil, err
+    // }
+    log.Println("#############################")
     row, err := ts.tr.CreateTask(input)
     if err != nil {
         return nil, err
@@ -39,6 +45,9 @@ func (ts *taskService) CreateTask(input *model.CreateTaskInput) (*model.Task, er
 }
 
 func (ts *taskService) UpdateTask(input *model.UpdateTaskInput) (*model.Task, error) {
+    if err := input.UpdateValidator(); err != nil {
+        return nil, err
+    }
     row, err := ts.tr.UpdateTask(input)
     if err != nil {
         return nil, err
@@ -47,6 +56,9 @@ func (ts *taskService) UpdateTask(input *model.UpdateTaskInput) (*model.Task, er
 }
 
 func (ts *taskService) DeleteTask(input *model.DeleteTaskInput) error {
+    if err := input.DeleteValidator(); err != nil {
+        return err
+    }
     err := ts.tr.DeleteTask(input)
     if err != nil {
         return err

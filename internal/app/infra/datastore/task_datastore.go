@@ -39,7 +39,7 @@ func (td *taskDatastore) CreateTask(input *model.CreateTaskInput) (*model.Task, 
         Title: input.Title,
         Content: input.Content,
         Schedule: input.Schedule,
-        Done: input.Done,
+        Done: false,
         CreatedAt: timestamp,
         UpdatedAt: timestamp,
     }

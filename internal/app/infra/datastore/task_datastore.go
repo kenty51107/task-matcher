@@ -36,9 +36,9 @@ func (td *taskDatastore) FindTasks() ([]*model.Task, error) {
 func (td *taskDatastore) CreateTask(input *model.CreateTaskInput) (*model.Task, error) {
     timestamp := time.Now()
     row := &model.Task{
-        Title: input.Title,
-        Content: input.Content,
-        Schedule: input.Schedule,
+        Title: *input.Title,
+        Content: *input.Content,
+        Schedule: *input.Schedule,
         Done: false,
         CreatedAt: timestamp,
         UpdatedAt: timestamp,

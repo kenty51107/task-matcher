@@ -19,6 +19,10 @@ type CreateTaskInput struct {
 	Done     bool      `json:"done"`
 }
 
+type DeleteTaskInput struct {
+	ID string `json:"id"`
+}
+
 type UpdateTaskInput struct {
 	ID       string     `json:"id"`
 	Title    *string    `json:"title,omitempty"`

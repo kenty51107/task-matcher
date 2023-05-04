@@ -14,7 +14,6 @@ input CreateTaskInput {
   title: String!
   content: String!
   schedule: Time!
-  done: Boolean!
 }
 
 input UpdateTaskInput {
@@ -25,6 +24,10 @@ input UpdateTaskInput {
   done: Boolean
 }
 
+input DeleteTaskInput {
+  id: ID!
+}
+
 type Query {
   getTask(id: ID!): Task!
   getTasks: [Task!]!
@@ -33,4 +36,5 @@ type Query {
 type Mutation {
   createTask(input: CreateTaskInput!): Task!
   updateTask(input: UpdateTaskInput!): Task!
+  deleteTask(input: DeleteTaskInput!): Task
 }

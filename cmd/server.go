@@ -5,17 +5,29 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
-	handlerlib "github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/joho/godotenv"
 	"github.com/kenty51107/task-matcher/graph/generated"
-	"github.com/kenty51107/task-matcher/internal/app/adapter/handler"
+	handlerlib "github.com/kenty51107/task-matcher/internal/app/adapter/handler"
+	"github.com/kenty51107/task-matcher/internal/app/infra/datastore"
+	"github.com/kenty51107/task-matcher/internal/app/infra/validator"
+	portlib "github.com/kenty51107/task-matcher/internal/app/usecase/port"
+	"github.com/kenty51107/task-matcher/internal/app/usecase/service"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 const defaultPort = "8080"
+
+func RegisterServer(tp portlib.ITaskPort) *handler.Server {
+    config := generated.Config{Resolvers: &handlerlib.Resolver{TP: tp}}
+    server := handler.NewDefaultServer(generated.NewExecutableSchema(config))
+
+    return server
+}
 
 func NewDB() *gorm.DB {
     if err := godotenv.Load(); err != nil {
@@ -46,17 +58,26 @@ func CloseDB(db *gorm.DB) {
 }
 
 func main() {
+    fmt.Println(time.Now())
+
     db := NewDB()
     defer CloseDB(db)
+
+    // seeds.TaskSeed(db)
 
     port := os.Getenv("PORT")
     if port == "" {
         port = defaultPort
     }
 
-    srv := handlerlib.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &handler.Resolver{}}))
+    taskValidator := validator.NewTaskValidator()
+    taskDatastore := datastore.NewTaskDatastore(db)
+    taskService := service.NewTaskService(taskDatastore, taskValidator)
+    taskPort := portlib.NewTaskPort(taskService)
+    graphqlHandler := RegisterServer(taskPort)
+    // srv := handlerlib.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &handler.Resolver{}}))
     http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-    http.Handle("/query", srv)
+    http.Handle("/query", graphqlHandler)
 
     log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
     log.Fatal(http.ListenAndServe(":"+port, nil))

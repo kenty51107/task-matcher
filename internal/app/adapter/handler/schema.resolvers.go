@@ -40,8 +40,8 @@ func (r *mutationResolver) DeleteTask(ctx context.Context, input model.DeleteTas
 }
 
 // GetTask is the resolver for the getTask field.
-func (r *queryResolver) GetTask(ctx context.Context, id string) (*model.Task, error) {
-	id_i, _ := strconv.Atoi(id)
+func (r *queryResolver) GetTask(ctx context.Context, id *string) (*model.Task, error) {
+	id_i, _ := strconv.Atoi(*id)
 	row, err := r.TP.FindTaskByID(id_i)
 	if err != nil {
 		return nil, err

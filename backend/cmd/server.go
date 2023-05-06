@@ -16,6 +16,7 @@ import (
 	"github.com/kenty51107/task-matcher/internal/app/infra/validator"
 	portlib "github.com/kenty51107/task-matcher/internal/app/usecase/port"
 	"github.com/kenty51107/task-matcher/internal/app/usecase/service"
+	"github.com/rs/cors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -75,9 +76,12 @@ func main() {
     taskService := service.NewTaskService(taskDatastore, taskValidator)
     taskPort := portlib.NewTaskPort(taskService)
     graphqlHandler := RegisterServer(taskPort)
-    // srv := handlerlib.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &handler.Resolver{}}))
+    c := cors.New(cors.Options{
+        AllowedOrigins: []string{"http://localhost:3000"},
+        AllowCredentials: true,
+    })
     http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-    http.Handle("/query", graphqlHandler)
+    http.Handle("/query", c.Handler(graphqlHandler))
 
     log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
     log.Fatal(http.ListenAndServe(":"+port, nil))

@@ -40,9 +40,6 @@ func (ts *taskService) FindTasks() ([]*model.Task, error) {
 }
 
 func (ts *taskService) CreateTask(input *model.CreateTaskInput) (*model.Task, error) {
-    // if err := ts.validator.Struct(input); err != nil {
-    //     return nil, err
-    // }
     err := ts.tv.Validate(input)
     if err != nil {
         validateError := ts.tv.GetValidateError(err)
@@ -56,10 +53,6 @@ func (ts *taskService) CreateTask(input *model.CreateTaskInput) (*model.Task, er
 }
 
 func (ts *taskService) UpdateTask(input *model.UpdateTaskInput) (*model.Task, error) {
-    // err := ts.validator.Struct(input)
-    // if err != nil {
-    //     return nil, err
-    // }
     err := ts.tv.Validate(input)
     if err != nil {
         validateError := ts.tv.GetValidateError(err)
@@ -73,9 +66,6 @@ func (ts *taskService) UpdateTask(input *model.UpdateTaskInput) (*model.Task, er
 }
 
 func (ts *taskService) DeleteTask(input *model.DeleteTaskInput) error {
-    // if err := ts.validator.Struct(input); err != nil {
-    //     return err
-    // }
     err := ts.tv.Validate(input)
     if err != nil {
         validateError := ts.tv.GetValidateError(err)

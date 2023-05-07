@@ -33,6 +33,14 @@ func (ud *userDatastore) FindUsers() ([]*model.User, error) {
     return rows, nil
 }
 
+func (ud *userDatastore) FindUserByEmail(email string) (*model.User, error) {
+    row := &model.User{}
+    if err := ud.DB.Where("email = ?", email).First(row).Error; err != nil {
+        return nil, err
+    }
+    return row, nil
+}
+
 func (ud *userDatastore) CreateUser(input *model.CreateUserInput) (*model.User, error) {
     timestamp := time.Now()
     row := &model.User{

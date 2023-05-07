@@ -104,6 +104,15 @@ func (r *queryResolver) GetUsers(ctx context.Context) ([]*model.User, error) {
 	return rows, nil
 }
 
+// GetUserByEmail is the resolver for the getUserByEmail field.
+func (r *queryResolver) GetUserByEmail(ctx context.Context, email *string) (*model.User, error) {
+	row, err := r.UP.FindUserByEmail(*email)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

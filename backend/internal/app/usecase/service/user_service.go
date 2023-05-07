@@ -39,6 +39,14 @@ func (us *userService) FindUsers() ([]*model.User, error) {
     return rows, nil
 }
 
+func (us *userService) FindUserByEmail(email string) (*model.User, error) {
+    row, err := us.ur.FindUserByEmail(email)
+    if err != nil {
+        return nil, err
+    }
+    return row, nil
+}
+
 func (us *userService) CreateUser(input *model.CreateUserInput) (*model.User, error) {
     err := us.tv.Validate(input)
     if err != nil {

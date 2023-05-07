@@ -10,6 +10,15 @@ type Task {
   updated_at: Time
 }
 
+type User {
+  id: ID
+  name: String
+  email: String
+  password: String
+  created_at: Time
+  updated_at: Time
+}
+
 input CreateTaskInput {
   title: String
   content: String
@@ -28,13 +37,36 @@ input DeleteTaskInput {
   id: ID
 }
 
+input CreateUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+input UpdateUserInput {
+  id: ID
+  name: String
+  email: String
+  password: String
+}
+
+input DeleteUserInput {
+  id: ID
+}
+
 type Query {
   getTask(id: ID): Task!
   getTasks: [Task!]!
+  getUser(id: ID): User!
+  getUsers: [User!]!
+  getUserByEmail(email: String): User!
 }
 
 type Mutation {
   createTask(input: CreateTaskInput!): Task!
   updateTask(input: UpdateTaskInput!): Task!
   deleteTask(input: DeleteTaskInput!): Task
+  createUser(input: CreateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(input: DeleteUserInput!): User
 }

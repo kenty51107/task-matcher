@@ -12,6 +12,7 @@ type userPort struct {
 type IUserPort interface {
     FindUserByID(userID int) (*model.User, error)
     FindUsers() ([]*model.User, error)
+    FindUserByEmail(email string) (*model.User, error)
     CreateUser(*model.CreateUserInput) (*model.User, error)
     UpdateUser(*model.UpdateUserInput) (*model.User, error)
     DeleteUser(*model.DeleteUserInput) error
@@ -27,6 +28,10 @@ func (tp *userPort) FindUserByID(userID int) (*model.User, error) {
 
 func (tp *userPort) FindUsers() ([]*model.User, error) {
     return tp.ts.FindUsers()
+}
+
+func (tp *userPort) FindUserByEmail(email string) (*model.User, error) {
+    return tp.ts.FindUserByEmail(email)
 }
 
 

@@ -8,4 +8,5 @@ import "github.com/kenty51107/task-matcher/internal/app/usecase/port"
 
 type Resolver struct{
     TP port.ITaskPort
+    UP port.IUserPort
 }

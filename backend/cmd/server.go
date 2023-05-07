@@ -23,8 +23,8 @@ import (
 
 const defaultPort = "8080"
 
-func RegisterServer(tp portlib.ITaskPort) *handler.Server {
-    config := generated.Config{Resolvers: &handlerlib.Resolver{TP: tp}}
+func RegisterServer(tp portlib.ITaskPort, up portlib.IUserPort) *handler.Server {
+    config := generated.Config{Resolvers: &handlerlib.Resolver{TP: tp, UP: up}}
     server := handler.NewDefaultServer(generated.NewExecutableSchema(config))
 
     return server
@@ -71,11 +71,16 @@ func main() {
         port = defaultPort
     }
 
+    userValidator := validator.NewUserValidator()
     taskValidator := validator.NewTaskValidator()
+    userDatastore := datastore.NewUserDatastore(db)
     taskDatastore := datastore.NewTaskDatastore(db)
+    userService := service.NewUserService(userDatastore, userValidator)
     taskService := service.NewTaskService(taskDatastore, taskValidator)
+    userPort := portlib.NewUserPort(userService)
     taskPort := portlib.NewTaskPort(taskService)
-    graphqlHandler := RegisterServer(taskPort)
+
+    graphqlHandler := RegisterServer(taskPort, userPort)
     c := cors.New(cors.Options{
         AllowedOrigins: []string{"http://localhost:3000"},
         AllowCredentials: true,

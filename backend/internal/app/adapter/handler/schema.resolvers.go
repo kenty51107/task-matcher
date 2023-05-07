@@ -39,6 +39,33 @@ func (r *mutationResolver) DeleteTask(ctx context.Context, input model.DeleteTas
 	return nil, nil
 }
 
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*model.User, error) {
+	row, err := r.UP.CreateUser(&input)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
+}
+
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UpdateUserInput) (*model.User, error) {
+	row, err := r.UP.UpdateUser(&input)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
+}
+
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, input model.DeleteUserInput) (*model.User, error) {
+	err := r.UP.DeleteUser(&input)
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
 // GetTask is the resolver for the getTask field.
 func (r *queryResolver) GetTask(ctx context.Context, id *string) (*model.Task, error) {
 	id_i, _ := strconv.Atoi(*id)
@@ -56,6 +83,34 @@ func (r *queryResolver) GetTasks(ctx context.Context) ([]*model.Task, error) {
 		return nil, err
 	}
 	return rows, nil
+}
+
+// GetUser is the resolver for the getUser field.
+func (r *queryResolver) GetUser(ctx context.Context, id *string) (*model.User, error) {
+	id_i, _ := strconv.Atoi(*id)
+	row, err := r.UP.FindUserByID(id_i)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
+}
+
+// GetUsers is the resolver for the getUsers field.
+func (r *queryResolver) GetUsers(ctx context.Context) ([]*model.User, error) {
+	rows, err := r.UP.FindUsers()
+	if err != nil {
+		return nil, err
+	}
+	return rows, nil
+}
+
+// GetUserByEmail is the resolver for the getUserByEmail field.
+func (r *queryResolver) GetUserByEmail(ctx context.Context, email *string) (*model.User, error) {
+	row, err := r.UP.FindUserByEmail(*email)
+	if err != nil {
+		return nil, err
+	}
+	return row, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

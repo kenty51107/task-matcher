@@ -1,11 +1,30 @@
 scalar Time
 
+enum TaskOrderField {
+  SCHEDULE
+  CREATED_AT
+}
+
+enum SortOrientation {
+  ASC
+  DESC
+}
+
 type Task {
   id: ID
   title: String
   content: String
   schedule: Time
   done: Boolean
+  created_at: Time
+  updated_at: Time
+}
+
+type User {
+  id: ID
+  name: String
+  email: String
+  password: String
   created_at: Time
   updated_at: Time
 }
@@ -28,13 +47,41 @@ input DeleteTaskInput {
   id: ID
 }
 
+input CreateUserInput {
+  name: String
+  email: String
+  password: String
+}
+
+input UpdateUserInput {
+  id: ID
+  name: String
+  email: String
+  password: String
+}
+
+input DeleteUserInput {
+  id: ID
+}
+
+input TaskOrderInput {
+  field: TaskOrderField!
+  orientation: SortOrientation!
+}
+
 type Query {
   getTask(id: ID): Task!
-  getTasks: [Task!]!
+  getTasks(orderBy: TaskOrderInput!): [Task!]!
+  getUser(id: ID): User!
+  getUsers: [User!]!
+  getUserByEmail(email: String): User!
 }
 
 type Mutation {
   createTask(input: CreateTaskInput!): Task!
   updateTask(input: UpdateTaskInput!): Task!
   deleteTask(input: DeleteTaskInput!): Task
+  createUser(input: CreateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(input: DeleteUserInput!): User
 }

@@ -31,8 +31,8 @@ func (ts *taskService) FindTaskByID(taskID int) (*model.Task, error) {
     return row, nil
 }
 
-func (ts *taskService) FindTasks() ([]*model.Task, error) {
-    rows, err := ts.tr.FindTasks()
+func (ts *taskService) FindTasks(input *model.TaskOrderInput) ([]*model.Task, error) {
+    rows, err := ts.tr.FindTasks(input)
     if err != nil {
         return nil, err
     }

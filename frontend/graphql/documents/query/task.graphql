@@ -10,8 +10,8 @@ query getTask($id: ID) {
   }
 }
 
-query getTasks {
-  getTasks {
+query getTasks($field: TaskOrderField!, $orientation: SortOrientation!) {
+  getTasks(orderBy: { field: $field, orientation: $orientation }) {
     id
     title
     content

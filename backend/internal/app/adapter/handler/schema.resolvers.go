@@ -77,8 +77,8 @@ func (r *queryResolver) GetTask(ctx context.Context, id *string) (*model.Task, e
 }
 
 // GetTasks is the resolver for the getTasks field.
-func (r *queryResolver) GetTasks(ctx context.Context) ([]*model.Task, error) {
-	rows, err := r.TP.FindTasks()
+func (r *queryResolver) GetTasks(ctx context.Context, orderBy *model.TaskOrderInput) ([]*model.Task, error) {
+	rows, err := r.TP.FindTasks(orderBy)
 	if err != nil {
 		return nil, err
 	}

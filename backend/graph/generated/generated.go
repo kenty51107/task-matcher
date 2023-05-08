@@ -56,7 +56,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		GetTask        func(childComplexity int, id *string) int
-		GetTasks       func(childComplexity int) int
+		GetTasks       func(childComplexity int, orderBy *model.TaskOrderInput) int
 		GetUser        func(childComplexity int, id *string) int
 		GetUserByEmail func(childComplexity int, email *string) int
 		GetUsers       func(childComplexity int) int
@@ -92,7 +92,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	GetTask(ctx context.Context, id *string) (*model.Task, error)
-	GetTasks(ctx context.Context) ([]*model.Task, error)
+	GetTasks(ctx context.Context, orderBy *model.TaskOrderInput) ([]*model.Task, error)
 	GetUser(ctx context.Context, id *string) (*model.User, error)
 	GetUsers(ctx context.Context) ([]*model.User, error)
 	GetUserByEmail(ctx context.Context, email *string) (*model.User, error)
@@ -202,7 +202,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Query.GetTasks(childComplexity), true
+		args, err := ec.field_Query_getTasks_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetTasks(childComplexity, args["orderBy"].(*model.TaskOrderInput)), true
 
 	case "Query.getUser":
 		if e.complexity.Query.GetUser == nil {
@@ -338,6 +343,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCreateUserInput,
 		ec.unmarshalInputDeleteTaskInput,
 		ec.unmarshalInputDeleteUserInput,
+		ec.unmarshalInputTaskOrderInput,
 		ec.unmarshalInputUpdateTaskInput,
 		ec.unmarshalInputUpdateUserInput,
 	)
@@ -402,6 +408,16 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 var sources = []*ast.Source{
 	{Name: "../schema.graphqls", Input: `scalar Time
 
+enum TaskOrderField {
+  SCHEDULE
+  CREATED_AT
+}
+
+enum SortOrientation {
+  ASC
+  DESC
+}
+
 type Task {
   id: ID
   title: String
@@ -456,9 +472,14 @@ input DeleteUserInput {
   id: ID
 }
 
+input TaskOrderInput {
+  field: TaskOrderField!
+  orientation: SortOrientation!
+}
+
 type Query {
   getTask(id: ID): Task!
-  getTasks: [Task!]!
+  getTasks(orderBy: TaskOrderInput): [Task!]!
   getUser(id: ID): User!
   getUsers: [User!]!
   getUserByEmail(email: String): User!
@@ -597,6 +618,21 @@ func (ec *executionContext) field_Query_getTask_args(ctx context.Context, rawArg
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getTasks_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *model.TaskOrderInput
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+		arg0, err = ec.unmarshalOTaskOrderInput2ᚖgithubᚗcomᚋkenty51107ᚋtaskᚑmatcherᚋinternalᚋappᚋdomainᚋmodelᚐTaskOrderInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg0
 	return args, nil
 }
 
@@ -1167,7 +1203,7 @@ func (ec *executionContext) _Query_getTasks(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetTasks(rctx)
+		return ec.resolvers.Query().GetTasks(rctx, fc.Args["orderBy"].(*model.TaskOrderInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1209,6 +1245,17 @@ func (ec *executionContext) fieldContext_Query_getTasks(ctx context.Context, fie
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getTasks_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -3988,6 +4035,42 @@ func (ec *executionContext) unmarshalInputDeleteUserInput(ctx context.Context, o
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputTaskOrderInput(ctx context.Context, obj interface{}) (model.TaskOrderInput, error) {
+	var it model.TaskOrderInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"field", "orientation"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "field":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			it.Field, err = ec.unmarshalNTaskOrderField2githubᚗcomᚋkenty51107ᚋtaskᚑmatcherᚋinternalᚋappᚋdomainᚋmodelᚐTaskOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "orientation":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orientation"))
+			it.Orientation, err = ec.unmarshalNSortOrientation2githubᚗcomᚋkenty51107ᚋtaskᚑmatcherᚋinternalᚋappᚋdomainᚋmodelᚐSortOrientation(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputUpdateTaskInput(ctx context.Context, obj interface{}) (model.UpdateTaskInput, error) {
 	var it model.UpdateTaskInput
 	asMap := map[string]interface{}{}
@@ -4790,6 +4873,16 @@ func (ec *executionContext) unmarshalNDeleteUserInput2githubᚗcomᚋkenty51107�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNSortOrientation2githubᚗcomᚋkenty51107ᚋtaskᚑmatcherᚋinternalᚋappᚋdomainᚋmodelᚐSortOrientation(ctx context.Context, v interface{}) (model.SortOrientation, error) {
+	var res model.SortOrientation
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNSortOrientation2githubᚗcomᚋkenty51107ᚋtaskᚑmatcherᚋinternalᚋappᚋdomainᚋmodelᚐSortOrientation(ctx context.Context, sel ast.SelectionSet, v model.SortOrientation) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4861,6 +4954,16 @@ func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋkenty51107ᚋtaskᚑm
 		return graphql.Null
 	}
 	return ec._Task(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNTaskOrderField2githubᚗcomᚋkenty51107ᚋtaskᚑmatcherᚋinternalᚋappᚋdomainᚋmodelᚐTaskOrderField(ctx context.Context, v interface{}) (model.TaskOrderField, error) {
+	var res model.TaskOrderField
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTaskOrderField2githubᚗcomᚋkenty51107ᚋtaskᚑmatcherᚋinternalᚋappᚋdomainᚋmodelᚐTaskOrderField(ctx context.Context, sel ast.SelectionSet, v model.TaskOrderField) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNUpdateTaskInput2githubᚗcomᚋkenty51107ᚋtaskᚑmatcherᚋinternalᚋappᚋdomainᚋmodelᚐUpdateTaskInput(ctx context.Context, v interface{}) (model.UpdateTaskInput, error) {
@@ -5267,6 +5370,14 @@ func (ec *executionContext) marshalOTask2ᚖgithubᚗcomᚋkenty51107ᚋtaskᚑm
 		return graphql.Null
 	}
 	return ec._Task(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOTaskOrderInput2ᚖgithubᚗcomᚋkenty51107ᚋtaskᚑmatcherᚋinternalᚋappᚋdomainᚋmodelᚐTaskOrderInput(ctx context.Context, v interface{}) (*model.TaskOrderInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTaskOrderInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {

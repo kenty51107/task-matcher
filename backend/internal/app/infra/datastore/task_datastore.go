@@ -25,9 +25,11 @@ func (td *taskDatastore) FindTaskByID(taskID int) (*model.Task, error) {
     return row, nil
 }
 
-func (td *taskDatastore) FindTasks() ([]*model.Task, error) {
+func (td *taskDatastore) FindTasks(input *model.TaskOrderInput) ([]*model.Task, error) {
     rows  := []*model.Task{}
-    if err := td.DB.Find(&rows).Error; err != nil {
+    orderBy := fmt.Sprintf("%s %s", input.Field.String(), input.Orientation.String())
+    fmt.Println(orderBy)
+    if err := td.DB.Order(orderBy).Find(&rows).Error; err != nil {
         return nil, err
     }
     return rows, nil

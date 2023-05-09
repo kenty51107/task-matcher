@@ -1,0 +1,21 @@
+.wrapper {
+  background: maroon;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  margin-left: 10px;
+}
+
+.logo {
+  color: #7fffff;
+  font-size: 2rem;
+  text-decoration: none;
+}
+
+.logo:hover {
+  text-decoration: none;
+  color: #127d7d;
+}

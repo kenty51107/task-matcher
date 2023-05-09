@@ -6,6 +6,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/kenty51107/task-matcher/graph/generated"
@@ -23,6 +24,7 @@ func (r *mutationResolver) CreateTask(ctx context.Context, input model.CreateTas
 
 // UpdateTask is the resolver for the updateTask field.
 func (r *mutationResolver) UpdateTask(ctx context.Context, input model.UpdateTaskInput) (*model.Task, error) {
+	fmt.Println("test")
 	row, err := r.TP.UpdateTask(&input)
 	if err != nil {
 		return nil, err

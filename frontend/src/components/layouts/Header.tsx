@@ -11,6 +11,11 @@ export const Header = () => {
               TodoMatcher
             </Link>
           </div>
+          <div className={styles.menu}>
+            <Link href="/tasks/createTask">
+              タスクを作成する
+            </Link>
+          </div>
         </div>
       </header>
     </>

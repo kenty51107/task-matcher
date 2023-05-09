@@ -3,13 +3,11 @@ import styles from './Footer.module.css'
 
 export const Footer = () => {
   return (
-    <>
-      <footer>
-        <div className={styles.wrapper}>
-          <div className={styles.menu}>
-          </div>
+    <footer>
+      <div className={styles.wrapper}>
+        <div className={styles.menu}>
         </div>
-      </footer>
-    </>
+      </div>
+    </footer>
   )
 }

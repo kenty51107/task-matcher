@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { useState } from 'react'
-import { GetTasksDocument } from '../../generated/graphql'
-import { GetTasksQuery } from '../../generated/graphql'
+import { GetTasksDocument, GetTasksQuery } from '../../generated/graphql'
 import styles from './styles/GetTasks.module.css'
 import Link from 'next/link'
 

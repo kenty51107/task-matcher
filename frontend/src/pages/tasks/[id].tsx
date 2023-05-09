@@ -20,6 +20,9 @@ const TaskDetail = () => {
       <div className={styles.itemContainer}>
         <h3 className={styles.header}>
           {data?.getTask?.title}
+          <Link href={`/tasks/${data?.getTask?.id}/editTask`}>
+            編集
+          </Link>
         </h3>
         <div className={styles.body}>
           <ul>

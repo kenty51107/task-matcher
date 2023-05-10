@@ -12,7 +12,7 @@ export const Header = () => {
             </Link>
           </div>
           <div className={styles.menu}>
-            <Link href="/tasks/createTask">
+            <Link href="/tasks/new">
               タスクを作成する
             </Link>
           </div>

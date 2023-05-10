@@ -9,8 +9,11 @@ import Link from 'next/link'
 const TaskDetail = () => {
   const router = useRouter()
   const { id } = router.query
-  const { data } = useQuery<GetTaskQuery>(GetTaskDocument,
-    { variables: { id: id } })
+  const { loading, error, data } = useQuery<GetTaskQuery>(GetTaskDocument, {
+    variables: { id: id }
+  })
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
   return (
     <>
       <Head>
@@ -22,6 +25,9 @@ const TaskDetail = () => {
           {data?.getTask?.title}
           <Link href={`/tasks/${data?.getTask?.id}/editTask`}>
             編集
+          </Link>
+          <Link href={`/tasks/${data?.getTask?.id}/edit`}>
+            edit
           </Link>
         </h3>
         <div className={styles.body}>

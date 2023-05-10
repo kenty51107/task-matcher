@@ -1,11 +1,11 @@
 # Task Matcherの概要
 
 タスク管理を行う
-golang × next.js × GraphQL なアプリケーションです.
+Golang × Next.js × GraphQL なアプリケーションです.
 <br>
-バックエンドはgolangでClean Architectureを意識して構築しました.
+バックエンドはGolangでClean Architectureを意識して構築しました.
 <br>
-フロントエンドはnext.jsを使用しました. bulletproof-react風なディレクトリ構成を取り入れ,
+フロントエンドはNext.jsを使用しました. bulletproof-react風なディレクトリ構成を取り入れ,
 <br>
 すっきりとした構成を目指しました.
 <br>

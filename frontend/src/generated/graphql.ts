@@ -22,15 +22,28 @@ export type CreateTaskInput = {
   title?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateUserInput = {
+  email?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
+};
+
 export type DeleteTaskInput = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+export type DeleteUserInput = {
   id?: InputMaybe<Scalars['ID']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createTask: Task;
+  createUser: User;
   deleteTask?: Maybe<Task>;
+  deleteUser?: Maybe<User>;
   updateTask: Task;
+  updateUser: User;
 };
 
 
@@ -39,8 +52,18 @@ export type MutationCreateTaskArgs = {
 };
 
 
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
+};
+
+
 export type MutationDeleteTaskArgs = {
   input: DeleteTaskInput;
+};
+
+
+export type MutationDeleteUserArgs = {
+  input: DeleteUserInput;
 };
 
 
@@ -48,16 +71,44 @@ export type MutationUpdateTaskArgs = {
   input: UpdateTaskInput;
 };
 
+
+export type MutationUpdateUserArgs = {
+  input: UpdateUserInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   getTask: Task;
   getTasks: Array<Task>;
+  getUser: User;
+  getUserByEmail: User;
+  getUsers: Array<User>;
 };
 
 
 export type QueryGetTaskArgs = {
   id?: InputMaybe<Scalars['ID']>;
 };
+
+
+export type QueryGetTasksArgs = {
+  orderBy: TaskOrderInput;
+};
+
+
+export type QueryGetUserArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
+export type QueryGetUserByEmailArgs = {
+  email?: InputMaybe<Scalars['String']>;
+};
+
+export enum SortOrientation {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
 
 export type Task = {
   __typename?: 'Task';
@@ -70,12 +121,39 @@ export type Task = {
   updated_at?: Maybe<Scalars['Time']>;
 };
 
+export enum TaskOrderField {
+  CreatedAt = 'CREATED_AT',
+  Schedule = 'SCHEDULE'
+}
+
+export type TaskOrderInput = {
+  field: TaskOrderField;
+  orientation: SortOrientation;
+};
+
 export type UpdateTaskInput = {
   content?: InputMaybe<Scalars['String']>;
   done?: InputMaybe<Scalars['Boolean']>;
   id?: InputMaybe<Scalars['ID']>;
   schedule?: InputMaybe<Scalars['Time']>;
   title?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateUserInput = {
+  email?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  name?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
+};
+
+export type User = {
+  __typename?: 'User';
+  created_at?: Maybe<Scalars['Time']>;
+  email?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['ID']>;
+  name?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['Time']>;
 };
 
 export type GetTaskQueryVariables = Exact<{
@@ -85,7 +163,10 @@ export type GetTaskQueryVariables = Exact<{
 
 export type GetTaskQuery = { __typename?: 'Query', getTask: { __typename?: 'Task', id?: string | null, title?: string | null, content?: string | null, schedule?: string | null, done?: boolean | null, created_at?: string | null, updated_at?: string | null } };
 
-export type GetTasksQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetTasksQueryVariables = Exact<{
+  field: TaskOrderField;
+  orientation: SortOrientation;
+}>;
 
 
 export type GetTasksQuery = { __typename?: 'Query', getTasks: Array<{ __typename?: 'Task', id?: string | null, title?: string | null, content?: string | null, schedule?: string | null, done?: boolean | null, created_at?: string | null, updated_at?: string | null }> };
@@ -105,8 +186,8 @@ export const GetTaskDocument = gql`
 }
     `;
 export const GetTasksDocument = gql`
-    query getTasks {
-  getTasks {
+    query getTasks($field: TaskOrderField!, $orientation: SortOrientation!) {
+  getTasks(orderBy: {field: $field, orientation: $orientation}) {
     id
     title
     content
@@ -128,7 +209,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     getTask(variables?: GetTaskQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTaskQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetTaskQuery>(GetTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTask', 'query');
     },
-    getTasks(variables?: GetTasksQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTasksQuery> {
+    getTasks(variables: GetTasksQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTasksQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetTasksQuery>(GetTasksDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTasks', 'query');
     }
   };

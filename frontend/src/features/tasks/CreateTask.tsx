@@ -2,6 +2,8 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { CreateTaskInput, CreateTaskDocument, CreateTaskMutation } from '../../generated/graphql'
+import { addTimeZone } from '../time/FormatDateTime'
+import styles from './styles/CreateTask.module.css'
 
 const CreateTask = () => {
   const [task, setTask] = useState<CreateTaskInput>({
@@ -9,12 +11,8 @@ const CreateTask = () => {
     content: '',
     schedule: '',
   })
-  const [createTask] = useMutation<CreateTaskMutation>(CreateTaskDocument)
+  const [createTask, { error }] = useMutation<CreateTaskMutation>(CreateTaskDocument)
   const router = useRouter()
-
-  const addTimeZone = (dateTime: string) => {
-    return `${dateTime}:00+09:00`
-  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -26,12 +24,13 @@ const CreateTask = () => {
 
   const handleSave = async () => {
     try {
-      const scheduleAddedTimeZone = addTimeZone(task.schedule!)
       await createTask({
         variables: {
-          title: task.title,
-          content: task.content,
-          schedule: scheduleAddedTimeZone,
+          input: {
+            title: task.title,
+            content: task.content,
+            schedule: addTimeZone(task.schedule!)
+          }
         }
       })
       alert('作成しました')
@@ -41,20 +40,19 @@ const CreateTask = () => {
     }
   }
   return (
-    <div>
+    <div className={styles.wrapper}>
       <div>
-        <label htmlFor="title">タイトル</label>
-        <input type="text" name="title" value={task.title!} onChange={handleChange} />
+        <input type="text" name="title" value={task.title!} placeholder={'タイトル'} onChange={handleChange} className={styles.title} />
       </div>
       <div>
-        <label htmlFor="content">内容</label>
-        <textarea value={task.content!} name="content" onChange={handleChange} />
+        <textarea name="content" value={task.content!} placeholder={'内容'} onChange={handleChange} className={styles.content} />
       </div>
       <div>
-        <label htmlFor="schedule">予定日</label>
         <input type="datetime-local" name="schedule" value={task.schedule!} onChange={handleChange} />
       </div>
-      <button onClick={handleSave}>作成</button>
+      <div className={styles.button}>
+        <button onClick={handleSave}>作成</button>
+      </div>
     </div>
   )
 }

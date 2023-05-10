@@ -3,7 +3,7 @@ import styles from './Header.module.css'
 
 export const Header = () => {
   return (
-    <>
+    <div>
       <header>
         <div className={styles.wrapper}>
           <div className={styles.title}>
@@ -12,12 +12,12 @@ export const Header = () => {
             </Link>
           </div>
           <div className={styles.menu}>
-            <Link href="/tasks/new">
+            <Link className={styles.createLink} href="/tasks/new">
               タスクを作成する
             </Link>
           </div>
         </div>
       </header>
-    </>
+    </div>
   )
 }

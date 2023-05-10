@@ -3,6 +3,7 @@
   min-height: 50px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .title {
@@ -16,6 +17,19 @@
 }
 
 .logo:hover {
+  text-decoration: none;
+  color: #127d7d;
+}
+
+.menu {
+  margin-right: 10px;
+}
+
+.createLink {
+  color: #7fffff;
+}
+
+.createLink:hover {
   text-decoration: none;
   color: #127d7d;
 }

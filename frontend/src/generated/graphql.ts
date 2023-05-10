@@ -170,6 +170,13 @@ export type UpdateTaskMutationVariables = Exact<{
 
 export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask: { __typename?: 'Task', id?: string | null, title?: string | null, content?: string | null, schedule?: string | null, done?: boolean | null, created_at?: string | null, updated_at?: string | null } };
 
+export type DeleteTaskMutationVariables = Exact<{
+  input: DeleteTaskInput;
+}>;
+
+
+export type DeleteTaskMutation = { __typename?: 'Mutation', deleteTask?: { __typename?: 'Task', id?: string | null } | null };
+
 export type GetTaskQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
@@ -212,6 +219,13 @@ export const UpdateTaskDocument = gql`
   }
 }
     `;
+export const DeleteTaskDocument = gql`
+    mutation deleteTask($input: DeleteTaskInput!) {
+  deleteTask(input: $input) {
+    id
+  }
+}
+    `;
 export const GetTaskDocument = gql`
     query getTask($id: ID) {
   getTask(id: $id) {
@@ -251,6 +265,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     updateTask(variables: UpdateTaskMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateTaskMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateTaskMutation>(UpdateTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateTask', 'mutation');
+    },
+    deleteTask(variables: DeleteTaskMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteTaskMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteTaskMutation>(DeleteTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteTask', 'mutation');
     },
     getTask(variables?: GetTaskQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTaskQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetTaskQuery>(GetTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTask', 'query');

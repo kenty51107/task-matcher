@@ -1,13 +1,18 @@
 import Link from 'next/link'
 import CreateTask from '../../features/tasks/CreateTask'
+import styles from './styles/new.module.css'
+import { Header } from '@/src/components/layouts/Header'
 
 const CreateTaskPage = () => {
   return (
     <div>
-      <CreateTask />
+      <Header />
+      <div className={styles.form}>
+        <CreateTask />
+      </div>
       <hr />
-      <Link href={`/`}>
-        もどる
+      <Link href={`/`} className={styles.cancel}>
+        キャンセル
       </Link>
     </div>
   )

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { GetTaskDocument, GetTaskQuery } from '../../generated/graphql'
 import { UpdateTaskInput, UpdateTaskDocument, UpdateTaskMutation,  } from '../../generated/graphql'
+import { formatDateTime } from '../time/FormatDateTime'
 import styles from './styles/EditTask.module.css'
 
 type Props = {
@@ -38,20 +39,6 @@ const EditTask: NextPage<Props> = ({ id }) => {
 
   if (loading) return <p>Loading...</p>
 
-  const formatDateTime = (dateTime?: string) => {
-    const date = dateTime ? new Date(dateTime) : new Date()
-    const year = date.getFullYear().toString().padStart(4, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-    const hour = date.getHours().toString().padStart(2, '0')
-    const minute = date.getMinutes().toString().padStart(2, '0')
-    return `${year}-${month}-${day}T${hour}:${minute}`
-  }
-
-  const addTimeZone = (dateTime: string) => {
-    return `${dateTime}:00+09:00`
-  }
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setTask(prevState => ({
@@ -64,35 +51,36 @@ const EditTask: NextPage<Props> = ({ id }) => {
     try {
       await updateTask({
         variables: {
-          id: task.id,
-          title: task.title,
-          content: task.content,
-          schedule: addTimeZone(task.schedule!),
-          done: task.done,
+          input: {
+            id: task.id,
+            title: task.title,
+            content: task.content,
+            schedule: task.schedule,
+            done: task.done,
+          }
         }
       })
       alert('更新しました')
-      router.push('/')
+      router.push(`/tasks/${task.id}`)
     } catch (error) {
       alert(error)
     }
   }
 
   return (
-    <div>
-      <div className={`${styles.form} ${styles.title}`}>
-        <label htmlFor="title">タイトル</label>
-        <input type="text" name="title"  value={task.title!} onChange={handleChange} />
+    <div className={styles.wrapper}>
+      <div>
+        <input type="text" name="title"  value={task.title!} placeholder={'タイトル'} onChange={handleChange} className={styles.title} />
       </div>
-      <div className={`${styles.form} ${styles.content}`}>
-        <label htmlFor="content">内容</label>
-        <textarea name="content" value={task.content!} onChange={handleChange} />
+      <div>
+        <textarea name="content" value={task.content!} placeholder={'内容'} onChange={handleChange} className={styles.content} />
       </div>
-      <div className={`${styles.form} ${styles.schedule}`}>
-        <label htmlFor="schedule">予定日</label>
-        <input type="datetime-local" name="schedule" value={formatDateTime(task.schedule!)} onChange={handleChange} />
+      <div>
+        <input type="datetime-local" name="schedule" value={formatDateTime(task.schedule!)} onChange={handleChange}  />
       </div>
-      <button onClick={handleSave}>更新</button>
+      <div className={styles.button}>
+        <button onClick={handleSave} >更新</button>
+      </div>
     </div>
 
   )

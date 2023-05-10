@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { useState } from 'react'
 import { GetTasksDocument, GetTasksQuery } from '../../generated/graphql'
+import { formatDisplayDateTime } from '../time/FormatDateTime'
 import styles from './styles/GetTasks.module.css'
 import Link from 'next/link'
 
@@ -59,12 +60,9 @@ export const GetTasks = () => {
           {data?.getTasks?.map((task) => (
             <div key={task?.id} className={styles.item}>
               <Link href={`/tasks/${task.id}`}>
-                <h2>ID:{task.id}. {task.title}</h2>
+                <h2>{task.title}</h2>
               </Link>
-              <p>content: {task.content}</p>
-              <p>schedule: {task.schedule}</p>
-              <p>created_at: {task.created_at}</p>
-              <p>updated_at: {task.updated_at}</p>
+              <p>{formatDisplayDateTime(task.schedule!)}</p>
             </div>
           ))}
         </div>

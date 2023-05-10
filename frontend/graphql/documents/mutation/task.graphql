@@ -22,7 +22,8 @@ mutation updateTask($input: UpdateTaskInput!) {
   }
 }
 
-# mutation deleteTask($input: DeleteTaskInput!) {
-#   deleteTask(input: $input) {
-#   }
-# }
+mutation deleteTask($input: DeleteTaskInput!) {
+  deleteTask(input: $input) {
+    id
+  }
+}

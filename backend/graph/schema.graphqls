@@ -1,5 +1,15 @@
 scalar Time
 
+enum TaskOrderField {
+  SCHEDULE
+  CREATED_AT
+}
+
+enum SortOrientation {
+  ASC
+  DESC
+}
+
 type Task {
   id: ID
   title: String
@@ -54,9 +64,14 @@ input DeleteUserInput {
   id: ID
 }
 
+input TaskOrderInput {
+  field: TaskOrderField!
+  orientation: SortOrientation!
+}
+
 type Query {
   getTask(id: ID): Task!
-  getTasks: [Task!]!
+  getTasks(orderBy: TaskOrderInput!): [Task!]!
   getUser(id: ID): User!
   getUsers: [User!]!
   getUserByEmail(email: String): User!

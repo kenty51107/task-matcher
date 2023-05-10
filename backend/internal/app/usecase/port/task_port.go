@@ -11,7 +11,7 @@ type taskPort struct {
 
 type ITaskPort interface {
     FindTaskByID(taskID int) (*model.Task, error)
-    FindTasks() ([]*model.Task, error)
+    FindTasks(*model.TaskOrderInput) ([]*model.Task, error)
     CreateTask(*model.CreateTaskInput) (*model.Task, error)
     UpdateTask(*model.UpdateTaskInput) (*model.Task, error)
     DeleteTask(*model.DeleteTaskInput) error
@@ -25,8 +25,8 @@ func (tp *taskPort) FindTaskByID(taskID int) (*model.Task, error) {
     return tp.ts.FindTaskByID(taskID)
 }
 
-func (tp *taskPort) FindTasks() ([]*model.Task, error) {
-    return tp.ts.FindTasks()
+func (tp *taskPort) FindTasks(input *model.TaskOrderInput) ([]*model.Task, error) {
+    return tp.ts.FindTasks(input)
 }
 
 func (tp *taskPort) CreateTask(input *model.CreateTaskInput) (*model.Task, error) {

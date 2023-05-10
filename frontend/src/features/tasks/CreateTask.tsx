@@ -12,6 +12,10 @@ const CreateTask = () => {
   const [createTask] = useMutation<CreateTaskMutation>(CreateTaskDocument)
   const router = useRouter()
 
+  const addTimeZone = (dateTime: string) => {
+    return `${dateTime}:00+09:00`
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setTask(prevState => ({
@@ -22,11 +26,12 @@ const CreateTask = () => {
 
   const handleSave = async () => {
     try {
+      const scheduleAddedTimeZone = addTimeZone(task.schedule!)
       await createTask({
         variables: {
           title: task.title,
           content: task.content,
-          schedule: task.schedule,
+          schedule: scheduleAddedTimeZone,
         }
       })
       alert('作成しました')

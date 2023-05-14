@@ -3,7 +3,7 @@ import { useQuery, useMutation } from '@apollo/client'
 import { GetTaskDocument, GetTaskQuery, DeleteTaskDocument, DeleteTaskMutation } from '../../generated/graphql'
 import { useRouter } from 'next/router'
 import { Header } from '../../components/layouts/Header'
-import { formatDisplayDateTime } from '../../features/time/FormatDateTime'
+import dayjs from 'dayjs'
 import styles from './styles/GetTask.module.css'
 import Link from 'next/link'
 
@@ -50,7 +50,7 @@ const GetTask = () => {
         <div className={styles.body}>
           <ul className={styles.list}>
             <li><span className={styles.label}>詳細</span> {data?.getTask?.content}</li>
-              <li><span className={styles.label}>時間</span> {formatDisplayDateTime(data?.getTask?.schedule!)}</li>
+              <li><span className={styles.label}>時間</span> {dayjs(data?.getTask?.schedule!).format("YYYY-MM-DD HH:mm")}</li>
           </ul>
         </div>
       </div>

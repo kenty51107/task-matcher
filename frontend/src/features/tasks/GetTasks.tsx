@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { useState } from 'react'
 import { GetTasksDocument, GetTasksQuery } from '../../generated/graphql'
-import { formatDisplayDateTime } from '../time/FormatDateTime'
+import dayjs from 'dayjs'
 import styles from './styles/GetTasks.module.css'
 import Link from 'next/link'
 
@@ -62,7 +62,7 @@ export const GetTasks = () => {
               <Link href={`/tasks/${task.id}`}>
                 <h2>{task.title}</h2>
               </Link>
-              <p>{formatDisplayDateTime(task.schedule!)}</p>
+              <p>{dayjs(task.schedule!).format("YYYY-MM-DD HH:mm")}</p>
             </div>
           ))}
         </div>

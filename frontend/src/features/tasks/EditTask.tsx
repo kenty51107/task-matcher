@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { GetTaskDocument, GetTaskQuery } from '../../generated/graphql'
 import { UpdateTaskInput, UpdateTaskDocument, UpdateTaskMutation,  } from '../../generated/graphql'
-import { formatDateTime } from '../time/FormatDateTime'
-import styles from './styles/EditTask.module.css'
+import { TaskForm } from './TaskForm'
+import dayjs from 'dayjs'
 
 type Props = {
   id: string
@@ -17,14 +17,24 @@ const EditTask: NextPage<Props> = ({ id }) => {
     title: '',
     content: '',
     schedule: '',
-    done: null,
+    done: false,
   })
   const { loading, data } = useQuery<GetTaskQuery>(GetTaskDocument, {
     variables: { id },
     skip: !id,
   })
-  const [updateTask, { error }] = useMutation<UpdateTaskMutation>(UpdateTaskDocument)
+  const [isError, setIsError] = useState<boolean>(true)
+  const [updateTask] = useMutation<UpdateTaskMutation>(UpdateTaskDocument)
   const router = useRouter()
+
+  const inputLengthZero = (): boolean => {
+    if (task.title!.length === 0 || task.content!.length === 0 || task.schedule === '') {
+      return true
+    } else {
+
+    return false
+    }
+  }
 
   useEffect(() => {
     if (!data || !data.getTask) return
@@ -36,6 +46,11 @@ const EditTask: NextPage<Props> = ({ id }) => {
       done: data.getTask.done,
     })
   }, [data])
+
+  useEffect(() => {
+    console.log(task)
+    setIsError(inputLengthZero())
+  }, [task])
 
   if (loading) return <p>Loading...</p>
 
@@ -55,7 +70,7 @@ const EditTask: NextPage<Props> = ({ id }) => {
             id: task.id,
             title: task.title,
             content: task.content,
-            schedule: task.schedule,
+            schedule: dayjs(task.schedule).format(),
             done: task.done,
           }
         }
@@ -68,21 +83,12 @@ const EditTask: NextPage<Props> = ({ id }) => {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <div>
-        <input type="text" name="title"  value={task.title!} placeholder={'タイトル'} onChange={handleChange} className={styles.title} />
-      </div>
-      <div>
-        <textarea name="content" value={task.content!} placeholder={'内容'} onChange={handleChange} className={styles.content} />
-      </div>
-      <div>
-        <input type="datetime-local" name="schedule" value={formatDateTime(task.schedule!)} onChange={handleChange}  />
-      </div>
-      <div className={styles.button}>
-        <button onClick={handleSave} >更新</button>
-      </div>
-    </div>
-
+    <TaskForm
+      task={task}
+      isError={isError}
+      handleChange={(e) => handleChange(e)}
+      handleSave={() => handleSave()}
+    />
   )
 }
 

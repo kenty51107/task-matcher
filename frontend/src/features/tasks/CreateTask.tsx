@@ -1,9 +1,9 @@
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { CreateTaskInput, CreateTaskDocument, CreateTaskMutation } from '../../generated/graphql'
-import { addTimeZone } from '../time/FormatDateTime'
-import styles from './styles/CreateTask.module.css'
+import { TaskForm } from './TaskForm'
+import dayjs from 'dayjs'
 
 const CreateTask = () => {
   const [task, setTask] = useState<CreateTaskInput>({
@@ -11,15 +11,37 @@ const CreateTask = () => {
     content: '',
     schedule: '',
   })
-  const [createTask, { error }] = useMutation<CreateTaskMutation>(CreateTaskDocument)
+  const [isError, setIsError] = useState<boolean>(true)
+  const [createTask] = useMutation<CreateTaskMutation>(CreateTaskDocument)
   const router = useRouter()
+
+  const inputLengthZero = (): boolean => {
+    if (task.title!.length === 0 || task.content!.length === 0 || task.schedule === '') {
+      return true
+    } else {
+
+    return false
+    }
+  }
+
+  useEffect(() => {
+    console.log(task)
+    setIsError(inputLengthZero())
+  }, [task])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setTask(prevState => ({
-      ...prevState,
-      [name]: value,
-    }))
+    switch (name) {
+      case 'title':
+        if (value.length > 10) return
+      case 'content':
+        if (value.length >= 10) return
+      default:
+        setTask(prevState => ({
+          ...prevState,
+          [name]: value,
+        }))
+    }
   }
 
   const handleSave = async () => {
@@ -29,7 +51,7 @@ const CreateTask = () => {
           input: {
             title: task.title,
             content: task.content,
-            schedule: addTimeZone(task.schedule!)
+            schedule: dayjs(task.schedule).format()
           }
         }
       })
@@ -39,21 +61,14 @@ const CreateTask = () => {
       alert(error)
     }
   }
+
   return (
-    <div className={styles.wrapper}>
-      <div>
-        <input type="text" name="title" value={task.title!} placeholder={'タイトル'} onChange={handleChange} className={styles.title} />
-      </div>
-      <div>
-        <textarea name="content" value={task.content!} placeholder={'内容'} onChange={handleChange} className={styles.content} />
-      </div>
-      <div>
-        <input type="datetime-local" name="schedule" value={task.schedule!} onChange={handleChange} />
-      </div>
-      <div className={styles.button}>
-        <button onClick={handleSave}>作成</button>
-      </div>
-    </div>
+    <TaskForm
+      task={task}
+      isError={isError}
+      handleChange={(e) => handleChange(e)}
+      handleSave={() => handleSave()}
+    />
   )
 }
 

@@ -1,6 +1,6 @@
 import GetTask from '../../features/tasks/GetTask'
 
-const show = () => {
+const Show = () => {
   return (
     <div>
       <GetTask />
@@ -8,4 +8,4 @@ const show = () => {
   )
 }
 
-export default show
+export default Show

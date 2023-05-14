@@ -1,25 +1,32 @@
+import { CreateTaskInput, UpdateTaskInput } from '../../generated/graphql'
+import dayjs from 'dayjs'
+import styles from './styles/TaskForm.module.css'
+
 type Props = {
-  title: string
-  setTitle: (title: string) => void
-  content: string
-  setContent: (content: string) => void
-  schedule: string
-  setSchedule: (schedule: string) => void
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
-  buttonText: string
+  task: CreateTaskInput | UpdateTaskInput
+  isError: boolean
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  handleSave: () => void
 }
 
-const TaskForm = ({ title, setTitle, content, setContent, schedule, setSchedule, handleSubmit, buttonText }: Props) => {
+
+export const TaskForm = ({task, isError, handleChange, handleSave}: Props) => {
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="title">タイトル</label>
-          <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
-        </div>
-      </form>
-    </>
+    <div className={styles.wrapper}>
+      <div className={styles.formWrapper}>
+        <input type="text" name="title" value={task.title!} placeholder={'タイトル'} onChange={(e) =>handleChange(e)} className={styles.title} required />
+        <p className={styles.counter}>{ task.title!.length } / 100文字</p>
+      </div>
+      <div className={styles.formWrapper}>
+        <textarea name="content" value={task.content!} placeholder={'内容'} onChange={handleChange} className={styles.content} required />
+        <p className={styles.counter}>{ task.content!.length } / 225文字</p>
+      </div>
+      <div>
+        <input type="datetime-local" name="schedule" value={dayjs(task.schedule!).format("YYYY-MM-DD HH:mm:ss")} onChange={handleChange} required />
+      </div>
+      <div className={styles.button}>
+        <button onClick={handleSave} disabled={isError}>作成</button>
+      </div>
+    </div>
   )
 }
-
-export default TaskForm

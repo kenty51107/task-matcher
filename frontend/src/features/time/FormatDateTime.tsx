@@ -13,5 +13,6 @@ export const formatDateTime = (dateTime?: string) => {
 }
 
 export const formatDisplayDateTime = (dateTime?: string) => {
+  if (!dateTime) return
   return formatDateTime(dateTime).replace('T', ' ')
 }

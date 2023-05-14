@@ -19,3 +19,12 @@
   display: flex;
   justify-content: center;
 }
+
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.counter {
+  text-align: right;
+}

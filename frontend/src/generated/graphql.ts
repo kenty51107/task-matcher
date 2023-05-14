@@ -156,6 +156,27 @@ export type User = {
   updated_at?: Maybe<Scalars['Time']>;
 };
 
+export type CreateTaskMutationVariables = Exact<{
+  input: CreateTaskInput;
+}>;
+
+
+export type CreateTaskMutation = { __typename?: 'Mutation', createTask: { __typename?: 'Task', id?: string | null, title?: string | null, content?: string | null, schedule?: string | null, done?: boolean | null, created_at?: string | null, updated_at?: string | null } };
+
+export type UpdateTaskMutationVariables = Exact<{
+  input: UpdateTaskInput;
+}>;
+
+
+export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask: { __typename?: 'Task', id?: string | null, title?: string | null, content?: string | null, schedule?: string | null, done?: boolean | null, created_at?: string | null, updated_at?: string | null } };
+
+export type DeleteTaskMutationVariables = Exact<{
+  input: DeleteTaskInput;
+}>;
+
+
+export type DeleteTaskMutation = { __typename?: 'Mutation', deleteTask?: { __typename?: 'Task', id?: string | null } | null };
+
 export type GetTaskQueryVariables = Exact<{
   id?: InputMaybe<Scalars['ID']>;
 }>;
@@ -172,6 +193,39 @@ export type GetTasksQueryVariables = Exact<{
 export type GetTasksQuery = { __typename?: 'Query', getTasks: Array<{ __typename?: 'Task', id?: string | null, title?: string | null, content?: string | null, schedule?: string | null, done?: boolean | null, created_at?: string | null, updated_at?: string | null }> };
 
 
+export const CreateTaskDocument = gql`
+    mutation createTask($input: CreateTaskInput!) {
+  createTask(input: $input) {
+    id
+    title
+    content
+    schedule
+    done
+    created_at
+    updated_at
+  }
+}
+    `;
+export const UpdateTaskDocument = gql`
+    mutation updateTask($input: UpdateTaskInput!) {
+  updateTask(input: $input) {
+    id
+    title
+    content
+    schedule
+    done
+    created_at
+    updated_at
+  }
+}
+    `;
+export const DeleteTaskDocument = gql`
+    mutation deleteTask($input: DeleteTaskInput!) {
+  deleteTask(input: $input) {
+    id
+  }
+}
+    `;
 export const GetTaskDocument = gql`
     query getTask($id: ID) {
   getTask(id: $id) {
@@ -206,6 +260,15 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    createTask(variables: CreateTaskMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateTaskMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateTaskMutation>(CreateTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createTask', 'mutation');
+    },
+    updateTask(variables: UpdateTaskMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UpdateTaskMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateTaskMutation>(UpdateTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'updateTask', 'mutation');
+    },
+    deleteTask(variables: DeleteTaskMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeleteTaskMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteTaskMutation>(DeleteTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deleteTask', 'mutation');
+    },
     getTask(variables?: GetTaskQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetTaskQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetTaskQuery>(GetTaskDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getTask', 'query');
     },
